@@ -1,0 +1,48 @@
+{
+  "name": "phonemizer",
+  "version": "1.0.0",
+  "description": "Simple text to phones converter using eSpeak NG",
+  "exports": {
+    "node": {
+      "import": "./dist/phonemizer.mjs",
+      "require": "./dist/phonemizer.js"
+    },
+    "default": "./dist/phonemizer.web.js"
+  },
+  "scripts": {
+    "build": "rm -rf dist && rollup -c",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xenova/phonemizer.js.git"
+  },
+  "keywords": [
+    "linguistics",
+    "espeak",
+    "phoneme",
+    "phonemization"
+  ],
+  "author": "Xenova",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/xenova/phonemizer.js/issues"
+  },
+  "homepage": "https://github.com/xenova/phonemizer.js#readme",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.2",
+    "@rollup/plugin-replace": "^6.0.2",
+    "@rollup/plugin-terser": "^0.4.4",
+    "prettier": "3.4.2",
+    "rollup": "^4.30.1",
+    "rollup-plugin-copy": "^3.5.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
