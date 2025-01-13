@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 var Module = typeof Module != "undefined" ? Module : {};
 var Module = typeof Module !== "undefined" ? Module : {};
 if (!Module.expectedDataFileDownloads) {
