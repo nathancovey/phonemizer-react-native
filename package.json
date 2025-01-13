@@ -1,6 +1,6 @@
 {
   "name": "phonemizer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Simple text to phones converter using eSpeak NG",
   "exports": {
     "types": "./types/phonemizer.d.ts",
