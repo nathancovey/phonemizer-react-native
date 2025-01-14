@@ -1,7 +1,7 @@
 const commonjs = require("@rollup/plugin-commonjs");
-const replace = require("@rollup/plugin-replace");
-const copy = require("rollup-plugin-copy");
 const terser = require("@rollup/plugin-terser");
+
+const plugins = [commonjs(), terser()];
 
 module.exports = [
   // Export CommonJS and ES module versions of the library
@@ -11,14 +11,7 @@ module.exports = [
       file: "dist/phonemizer.js",
       format: "cjs",
     },
-    external: ["fs", "path", "crypto"],
-    plugins: [
-      commonjs(),
-      terser(),
-      copy({
-        targets: [{ src: "src/espeakng.worker.data", dest: "dist" }],
-      }),
-    ],
+    plugins,
   },
   {
     input: "src/phonemizer.js",
@@ -27,22 +20,7 @@ module.exports = [
       format: "esm",
       footer: "export const { phonemize } = phonemizerExports;", // add the export statement
     },
-    external: ["fs", "path", "crypto"],
-    plugins: [
-      commonjs(),
-      replace({
-        include: "src/espeakng.worker.js",
-        delimiters: ["", ""],
-        preventAssignment: true,
-        values: {
-          __dirname: "import.meta.dirname",
-        },
-      }),
-      terser(),
-      copy({
-        targets: [{ src: "src/espeakng.worker.data", dest: "dist" }],
-      }),
-    ],
+    plugins,
   },
   // Export the web version of the library
   {
@@ -52,23 +30,6 @@ module.exports = [
       format: "esm",
       footer: "export const { phonemize } = phonemizerExports;", // add the export statement
     },
-    plugins: [
-      replace({
-        include: "src/espeakng.worker.js",
-        delimiters: ["", ""],
-        preventAssignment: true,
-        values: {
-          // Replace require() calls with empty objects (these paths won't be used in the browser)
-          'require("fs")': "({})",
-          'require("path")': "({})",
-          'require("crypto")': "({})",
-        },
-      }),
-      commonjs(),
-      terser(),
-      copy({
-        targets: [{ src: "src/espeakng.worker.data", dest: "dist" }],
-      }),
-    ],
+    plugins,
   },
 ];
