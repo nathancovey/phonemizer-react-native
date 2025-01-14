@@ -3,6 +3,8 @@ const terser = require("@rollup/plugin-terser");
 
 const plugins = [commonjs(), terser()];
 
+const ESM_FOOTER = "export const { phonemize, list_voices } = phonemizerExports;"; // add the export statement
+
 module.exports = [
   // Export CommonJS and ES module versions of the library
   {
@@ -18,7 +20,7 @@ module.exports = [
     output: {
       file: "dist/phonemizer.mjs",
       format: "esm",
-      footer: "export const { phonemize } = phonemizerExports;", // add the export statement
+      footer: ESM_FOOTER,
     },
     plugins,
   },
@@ -28,7 +30,7 @@ module.exports = [
     output: {
       file: "dist/phonemizer.web.js",
       format: "esm",
-      footer: "export const { phonemize } = phonemizerExports;", // add the export statement
+      footer: ESM_FOOTER,
     },
     plugins,
   },
