@@ -1,4 +1,4 @@
-const Module = require("./espeakng.worker.js");
+import Module from "./espeakng.worker.js";
 
 const workerPromise = new Promise((resolve) => {
   if (Module.calledRun) {
@@ -41,7 +41,7 @@ const initCache = workerPromise.then((worker) => {
  * @param {string} [language] The language identifier
  * @returns {Promise<{name: string; identifier: string; languages: {name: string; priority: number}[]}>} A list of available voices
  */
-const list_voices = async (language) => {
+export const list_voices = async (language) => {
   const { voices } = await initCache;
   if (!language) return voices;
   const base = language.split("-")[0];
@@ -59,7 +59,7 @@ const list_voices = async (language) => {
  * @param {string} [language] The language identifier
  * @returns {Promise<string[]>} A phonemized version of the input
  */
-const phonemize = async (text, language = "en-us") => {
+export const phonemize = async (text, language = "en-us") => {
   const worker = await workerPromise;
 
   const { identifiers } = await initCache;
@@ -77,6 +77,3 @@ const phonemize = async (text, language = "en-us") => {
       .filter((x) => x.length > 0) ?? []
   );
 };
-
-exports.phonemize = phonemize;
-exports.list_voices = list_voices;

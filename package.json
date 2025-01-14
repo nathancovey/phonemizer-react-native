@@ -2,13 +2,14 @@
   "name": "phonemizer",
   "version": "1.1.0",
   "description": "Simple text to phones converter using eSpeak NG",
+  "type": "module",
   "exports": {
     "types": "./types/phonemizer.d.ts",
     "node": {
-      "import": "./dist/phonemizer.mjs",
-      "require": "./dist/phonemizer.js"
+      "import": "./dist/phonemizer.js",
+      "require": "./dist/phonemizer.cjs"
     },
-    "default": "./dist/phonemizer.web.js"
+    "default": "./dist/phonemizer.js"
   },
   "scripts": {
     "build": "rm -rf dist types && rollup -c && tsc",
@@ -47,5 +48,7 @@
   ],
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "jsdelivr": "./dist/phonemizer.js",
+  "unpkg": "./dist/phonemizer.js"
 }
