@@ -6118,30 +6118,5 @@ eSpeakNGWorker.prototype.synthesize_ipa = function (aText, aCallback) {
   var ret = { code: code, ipa: res };
   return ret;
 };
-if (typeof WorkerGlobalScope !== "undefined") {
-  var worker;
-  Module.postRun = Module.postRun || [];
-  Module.postRun.push(function () {
-    worker = new eSpeakNGWorker();
-    postMessage("ready");
-  });
-  onmessage = function (e) {
-    if (!worker) {
-      throw "eSpeakNGWorker worker not initialized";
-    }
-    var args = e.data.args;
-    var message = { callback: e.data.callback, done: true };
-    if (e.data.method == "synthesize") {
-      args.push(function (samples, events) {
-        postMessage(
-          { callback: e.data.callback, result: [samples.buffer, events] },
-          [samples.buffer],
-        );
-      });
-    }
-    message.result = [worker[e.data.method].apply(worker, args)];
-    if (e.data.callback) postMessage(message);
-  };
-}
 
 export default Module;
