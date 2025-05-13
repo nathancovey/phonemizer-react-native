@@ -1,134 +1,118 @@
 # react-native-phonemizer
 
-**This is a React Native adaptation of Phonemizer.js.**
-**It requires `react-native-webassembly` and may require `expo prebuild` for managed Expo projects.**
+**A React Native adaptation of Phonemizer.js for text-to-phoneme conversion using eSpeak NG.**
 
-Simple text to phones converter using eSpeak NG.
+This package allows you to convert text into phonemes directly within your React Native application. It leverages WebAssembly and requires the `react-native-webassembly` package.
 
-## Basic usage
+**Important for Expo Users:** This package includes native code dependencies through `react-native-webassembly`. If you are using the Expo managed workflow, you will need to generate a custom development client using `npx expo prebuild --clean` and then run your app with `npx expo run:ios` or `npx expo run:android`. It will not work with the standard Expo Go app.
 
-```js
-import { phonemize } from "phonemizer";
+## Installation
 
-const phonemes = await phonemize("Hello world.");
-console.log(phonemes); // ['həlˈəʊ wˈɜːld']
+1.  **Install the package:**
+    ```bash
+    npm install react-native-phonemizer
+    # or
+    yarn add react-native-phonemizer
+    ```
+    If using Expo:
+    ```bash
+    npx expo install react-native-phonemizer
+    ```
+
+2.  **Install peer dependencies:**
+    This package relies on `react-native-webassembly`. Ensure it and other core React Native libraries are installed.
+    ```bash
+    npm install react-native-webassembly base-64 pako
+    # or
+    yarn add react-native-webassembly base-64 pako
+    ```
+    If using Expo, these should ideally be installed via `npx expo install`:
+    ```bash
+    npx expo install react-native-webassembly base-64 pako
+    ```
+
+3.  **Configure `app.json` (for Expo projects):**
+    Add `react-native-webassembly` to your `app.json` plugins:
+    ```json
+    {
+      "expo": {
+        // ... other configurations
+        "plugins": [
+          "react-native-webassembly"
+          // ... other plugins
+        ]
+      }
+    }
+    ```
+
+4.  **Prebuild (for Expo managed workflow):**
+    Generate the native `ios` and `android` directories.
+    ```bash
+    npx expo prebuild --clean
+    ```
+    Then run your app using `npx expo run:ios` or `npx expo run:android`.
+
+## Basic Usage
+
+```javascript
+import React, { useEffect, useState } from 'react';
+import { Text, View } from 'react-native';
+import { initialize, phonemize, getInstance } from 'react-native-phonemizer';
+
+export default function App() {
+  const [phonemes, setPhonemes] = useState(null);
+  const [error, setError] = useState(null);
+  const [wasmExports, setWasmExports] = useState(null);
+
+  useEffect(() => {
+    async function initAndPhonemize() {
+      try {
+        console.log('Attempting to initialize phonemizer...');
+        await initialize();
+        console.log('Phonemizer initialized successfully!');
+
+        const instance = getInstance();
+        if (instance?.exports) {
+          console.log('WASM Exports:', Object.keys(instance.exports));
+          setWasmExports(Object.keys(instance.exports).join(', '));
+        }
+
+        console.log('Attempting to phonemize "Hello world."...');
+        const result = await phonemize("Hello world.");
+        console.log('Phonemes:', result);
+        setPhonemes(result.join(' ')); // Example: display as a string
+      } catch (e) {
+        console.error('Failed to initialize or phonemize:', e);
+        setError(e.message);
+      }
+    }
+
+    initAndPhonemize();
+  }, []);
+
+  if (error) {
+    return <View><Text>Error: {error}</Text></View>;
+  }
+
+  return (
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <Text>Phonemizer Test</Text>
+      {wasmExports && <Text>WASM Exports: {wasmExports}</Text>}
+      {phonemes ? <Text>Phonemes for "Hello world.": {phonemes}</Text> : <Text>Loading...</Text>}
+    </View>
+  );
+}
 ```
-
-Alternatively, you can load the library from a CDN as follows:
-
-```html
-<script type="module">
-  import { phonemize } from "https://cdn.jsdelivr.net/npm/phonemizer";
-
-  const phonemes = await phonemize("Hello world.");
-  console.log(phonemes); // ['həlˈəʊ wˈɜːld']
-</script>
-```
-
-<details>
-
-```js
-const { phonemize } = require("phonemizer");
-
-(async () => {
-  const phonemes = await phonemize("Hello world.");
-  console.log(phonemes); // ['həlˈəʊ wˈɜːld']
-})();
-```
-
-<summary>CommonJS usage</summary>
-
-</details>
 
 ## Advanced Usage
 
-1. List supported voices
+The original `phonemizer.js` package had advanced features like listing voices and selecting different languages/voices. These functionalities depend on the specific WebAssembly module's exported functions.
 
-   ```js
-   import { list_voices } from "phonemizer";
-   console.dir(await list_voices(), { depth: null });
-   ```
+Once the WASM module is initialized, you can inspect `getInstance().exports` to see available functions. The `phonemize` function in this package is a basic wrapper. To use more advanced eSpeak NG features, you would need to:
 
-   <details>
+1.  Identify the corresponding exported C functions from the eSpeak NG WASM build.
+2.  Write JavaScript wrappers (similar to the `phoneme` function in `src/phonemizer.js`) to handle string marshalling (writing JS strings to WASM memory and reading results back).
 
-   <summary>Example output</summary>
+For example, if a function like `espeak_ListVoices` or `espeak_SetVoiceByName` were exported by the WASM module, you could call them.
 
-   ```js
-   [
-     {
-       name: "English (Caribbean)",
-       identifier: "gmw/en-029",
-       languages: [
-         { priority: 5, name: "en-029" },
-         { priority: 10, name: "en" },
-       ],
-     },
-     {
-       name: "English (Great Britain)",
-       identifier: "gmw/en",
-       languages: [
-         { priority: 2, name: "en-gb" },
-         { priority: 2, name: "en" },
-       ],
-     },
-     {
-       name: "English (Scotland)",
-       identifier: "gmw/en-GB-scotland",
-       languages: [
-         { priority: 5, name: "en-gb-scotland" },
-         { priority: 4, name: "en" },
-       ],
-     },
-     {
-       name: "English (Lancaster)",
-       identifier: "gmw/en-GB-x-gbclan",
-       languages: [
-         { priority: 5, name: "en-gb-x-gbclan" },
-         { priority: 3, name: "en-gb" },
-         { priority: 5, name: "en" },
-       ],
-     },
-     {
-       name: "English (West Midlands)",
-       identifier: "gmw/en-GB-x-gbcwmd",
-       languages: [
-         { priority: 5, name: "en-gb-x-gbcwmd" },
-         { priority: 9, name: "en-gb" },
-         { priority: 9, name: "en" },
-       ],
-     },
-     {
-       name: "English (Received Pronunciation)",
-       identifier: "gmw/en-GB-x-rp",
-       languages: [
-         { priority: 5, name: "en-gb-x-rp" },
-         { priority: 4, name: "en-gb" },
-         { priority: 5, name: "en" },
-       ],
-     },
-     {
-       name: "English (America)",
-       identifier: "gmw/en-US",
-       languages: [
-         { priority: 2, name: "en-us" },
-         { priority: 3, name: "en" },
-       ],
-     },
-     {
-       name: "English (America, New York City)",
-       identifier: "gmw/en-US-nyc",
-       languages: [{ priority: 5, name: "en-us-nyc" }],
-     },
-   ];
-   ```
-
-   </details>
-
-2. Select different language/voice
-
-   ```js
-   import { phonemize } from "phonemizer";
-
-   const phonemes = await phonemize("Hello world.", "en-gb-scotland");
-   console.log(phonemes); // [ 'həlˈoː wˈʌɹld' ]
-   ```
+The original `list_voices` example would need to be adapted to call the relevant exported WASM functions for listing voices and then process their output. This typically involves direct interaction with WASM memory and is beyond the scope of the current basic wrapper.
