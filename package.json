@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xenova/phonemizer.js.git"
+    "url": "git+https://github.com/nathancovey/phonemizer-react-native"
   },
   "keywords": [
     "linguistics",
@@ -29,9 +29,9 @@
   "author": "Xenova",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/xenova/phonemizer.js/issues"
+    "url": "https://github.com/nathancovey/phonemizer-react-native/issues"
   },
-  "homepage": "https://github.com/xenova/phonemizer.js#readme",
+  "homepage": "https://github.com/nathancovey/phonemizer-react-native#readme",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.2",
     "@rollup/plugin-terser": "^0.4.4",
