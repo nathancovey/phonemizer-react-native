@@ -1,3 +1,4 @@
+import 'react-native-webassembly'
 import { initialize, getInstance } from './phonemizer.js'
 
 async function testInitialization() {
