@@ -3,7 +3,7 @@
     "checkJs": true,
     "target": "esnext",
     "module": "CommonJS",
-    "outDir": "types",
+    "outDir": "./types",
     "skipLibCheck": true,
     "declaration": true,
     "declarationMap": true,

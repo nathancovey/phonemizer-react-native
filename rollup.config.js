@@ -5,17 +5,17 @@ const plugins = [commonjs(), terser()];
 
 const OUTPUT_CONFIGS = [
   {
-    file: "./dist/phonemizer.cjs",
+    file: "./dist/react-native-phonemizer.cjs",
     format: "cjs",
   },
   {
-    file: "./dist/phonemizer.js",
+    file: "./dist/react-native-phonemizer.js",
     format: "esm",
   },
 ];
 
 export default OUTPUT_CONFIGS.map((output) => ({
-  input: "./src/phonemizer.js",
+  input: "./src/index.js",
   output,
   plugins,
 }));

@@ -1,4 +1,7 @@
-# Phonemizer.js
+# react-native-phonemizer
+
+**This is a React Native adaptation of Phonemizer.js.**
+**It requires `react-native-webassembly` and may require `expo prebuild` for managed Expo projects.**
 
 Simple text to phones converter using eSpeak NG.
 
