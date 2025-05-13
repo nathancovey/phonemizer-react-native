@@ -1,6 +1,6 @@
 {
   "name": "react-native-phonemizer",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "Simple text to phones converter using eSpeak NG, for React Native Expo",
   "type": "module",
   "exports": {
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nathancovey/phonemizer-react-native"
+    "url": "git+https://github.com/nathancovey/phonemizer-react-native.git"
   },
   "keywords": [
     "linguistics",
